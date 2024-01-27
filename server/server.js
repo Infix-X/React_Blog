@@ -28,9 +28,17 @@ app.get('/api/articles/:name', async(req, res) => {
 
 //     //res.send(responseMessage);
 // });
-app.get('/api/articles/:name/upvotes',(req,res)=>{
+app.get('/api/articles/:name/upvotes',async(req,res)=>{
     const {name}=req.params;
-    const article = ArticleInfo.find(a=>a.name===name);
+    const client = new MongoClient('mongodb://127.0.0.1:27017');
+    await client.connect();
+
+    const db =client.db('react-blog-db');
+    await db.collection('articles').updateOne({name},{
+        $inc:{upvotes:1}
+    })
+
+    const article = await db.collection('articles').findOne({name});
     if(article){
         article.upvotes +=1;
         res.send(`The article name is ${article.name} and it has upvote are ${article.upvotes}`)
