@@ -1,10 +1,15 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import { useState ,useEffect} from 'react';
 import Article from './Article-content';
 import NotFoundPages from './NotFoundPages';
 
 const ArticlePages = () => {
   const { articleId } = useParams();
+  const[articleInfo,SetArticleInfo] = useState({pvotes:0});
+  useEffect(()=>{
+    SetArticleInfo(articleInfo)
+  })
   console.log('Article ID from useParams:', articleId);
   const article = Article.find(article => article.Title === articleId || article.Title2 === articleId);
 
