@@ -6,10 +6,13 @@ import NotFoundPages from './NotFoundPages';
 
 const ArticlePages = () => {
   const { articleId } = useParams();
+
   const[articleInfo,SetArticleInfo] = useState({pvotes:0});
   useEffect(()=>{
     SetArticleInfo(articleInfo)
   })
+
+
   console.log('Article ID from useParams:', articleId);
   const article = Article.find(article => article.Title === articleId || article.Title2 === articleId);
 
