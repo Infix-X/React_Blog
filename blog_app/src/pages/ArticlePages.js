@@ -1,35 +1,34 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { useState ,useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Article from './Article-content';
 import NotFoundPages from './NotFoundPages';
 
-
 const ArticlePages = () => {
   const { articleId } = useParams();
+  const [articleInfo, setArticleInfo] = useState({ upvotes: 0 });
 
-  const[articleInfo,SetArticleInfo] = useState({upvotes:0});
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`https://localhost:8000/api/articles/${articleId}`);
+        const response = await axios.get(`/api/articles/${articleId}`);
         const newArticleInfo = response.data;
-        SetArticleInfo(newArticleInfo);
+        setArticleInfo(newArticleInfo);
       } catch (error) {
         console.error('Error fetching article:', error);
       }
     };
-  
-    fetchData(); // Call the async function immediately
-  
-    // Return a cleanup function if necessary
-    
-  }, []);
 
+    fetchData(); // Call the async function immediately
+  }, [articleId]); // Make sure to include articleId as a dependency to re-fetch data when it changes
 
   console.log('Article ID from useParams:', articleId);
+
+  // Find the article based on articleId
   const article = Article.find(article => article.Title === articleId || article.Title2 === articleId);
+
+  debugger; // Pause execution here to inspect variables
 
   if (!article) {
     // Handle the case where the article is not found
@@ -39,7 +38,7 @@ const ArticlePages = () => {
   return (
     <div>
       <h1>{article.Author_name}</h1>
-      <p>these article has upvotes are:{articleInfo.upvotes} upvotes(s)</p>
+      <p>These article has upvotes are: {articleInfo.upvotes} upvotes(s)</p>
       {article.Title === articleId && (
         <>
           <h1>{article.Title}</h1>
