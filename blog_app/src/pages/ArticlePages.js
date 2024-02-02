@@ -1,47 +1,43 @@
-import React from 'react';
+import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useState ,useEffect} from 'react';
-import Article from './Article-content';
 import NotFoundPages from './NotFoundPages';
+import ArticleContentmin from './ArticleContentmin';
 
 const ArticlePages = () => {
   const { articleId } = useParams();
+  const [articleInfo, setArticleInfo] = useState({ upvotes: 0 });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const[articleInfo,SetArticleInfo] = useState({pvotes:0});
-  useEffect(()=>{
-    SetArticleInfo(articleInfo)
-  })
+  useEffect(() => {
+    const loadContent = async () => {
+      try {
+        const response = await axios.get(`/api/articles/${articleId}`);
+        setArticleInfo(response.data);
+        setLoading(false);
+      } catch (error) {
+        setError(error.message);
+        setLoading(false);
+      }
+    };
 
+    loadContent();
+  }, [articleId]);
 
-  console.log('Article ID from useParams:', articleId);
-  const article = Article.find(article => article.Title === articleId || article.Title2 === articleId);
+  if (loading) {
+    return <ArticleContentmin article={articleInfo} articleId={articleId} />;
+  }
 
-  if (!article) {
-    // Handle the case where the article is not found
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  if (!articleInfo) {
     return <NotFoundPages />;
   }
 
-  return (
-    <div>
-      <h1>{article.Author_name}</h1>
-      {article.Title === articleId && (
-        <>
-          <h1>{article.Title}</h1>
-          {article.content1.map((paragraph, i) => (
-            <p key={`content1-${i}`}>{paragraph}</p>
-          ))}
-        </>
-      )}
-      {article.Title2 === articleId && (
-        <>
-          <h1>{article.Title2}</h1>
-          {article.content2.map((paragraph, i) => (
-            <p key={`content2-${i}`}>{paragraph}</p>
-          ))}
-        </>
-      )}
-    </div>
-  );
+  
 };
 
 export default ArticlePages;
