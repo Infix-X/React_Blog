@@ -7,36 +7,24 @@ import ArticleContentmin from './ArticleContentmin';
 const ArticlePages = () => {
   const { articleId } = useParams();
   const [articleInfo, setArticleInfo] = useState({ upvotes: 0 });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  // const [loading, setLoading] = useState(true);
+  // const [error, setError] = useState(null);
 
   useEffect(() => {
     const loadContent = async () => {
-      try {
+     
         const response = await axios.get(`/api/articles/${articleId}`);
-        setArticleInfo(response.data);
-        setLoading(false);
-      } catch (error) {
-        setError(error.message);
-        setLoading(false);
-      }
-    };
+        const newresponse = response.data;
+      setArticleInfo(newresponse);
+    }
 
     loadContent();
   }, [articleId]);
 
-  if (loading) {
-    return <ArticleContentmin article={articleInfo} articleId={articleId} />;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
   if (!articleInfo) {
     return <NotFoundPages />;
   }
-
+  return <ArticleContentmin article={articleInfo} articleId={articleId} />;
   
 };
 
