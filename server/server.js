@@ -2,6 +2,9 @@ import express from 'express';
 import {MongoClient} from 'mongodb'
 const app = express();
 app.use(express.json());
+// Enable CORS for all origins
+// const cors = require('cors');
+// app.use(cors());
 app.get('/api/articles/:name', async(req, res) => {
     const {name} = req.params;
     const client = new MongoClient('mongodb://127.0.0.1:27017');
@@ -29,11 +32,11 @@ app.get('/api/articles/:name', async(req, res) => {
 //     //res.send(responseMessage);
 // });
 
-app.get('/api/articles/:name/upvotes',(req,res)=>{
+app.get('/api/articles/upvotes',(req,res)=>{
     const {name}=req.params;
     const article = ArticleInfo.find(a=>a.name===name);
 });
-app.get('/api/articles/:name/upvotes',async(req,res)=>{
+app.get('/api/articles/upvotes',async(req,res)=>{
     const {name}=req.params;
     const client = new MongoClient('mongodb://127.0.0.1:27017');
     await client.connect();
